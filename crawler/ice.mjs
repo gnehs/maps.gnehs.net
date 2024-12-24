@@ -29,5 +29,4 @@ const result = [
 ];
 
 if (!fs.existsSync("dist")) fs.mkdirSync("dist", { recursive: true });
-fs.writeFileSync("../frontend/public/ice.json");
 fs.writeFileSync("./dist/ice.json", JSON.stringify(result, null, 2));

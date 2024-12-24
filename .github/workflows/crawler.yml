@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # 允許手動觸發
 
 jobs:
-  update-data:
+  run-crawler:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -32,6 +32,24 @@ jobs:
 
       - name: Run Crawler
         run: pnpm ice
+
+      - name: Upload Data
+        uses: actions/upload-artifact@v3
+        with:
+          name: ice-data
+          path: ./crawler/dist/ice.json
+
+  commit-data:
+    runs-on: ubuntu-latest
+    needs: run-crawler
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Data
+        uses: actions/download-artifact@v3
+        with:
+          name: ice-data
+          path: ./frontend/public
 
       - uses: EndBug/add-and-commit@v9
         with:
