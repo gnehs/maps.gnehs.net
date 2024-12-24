@@ -1,10 +1,13 @@
 import fs from "fs";
+const HEADERS = {
+  accept: "*/*",
+  "accept-language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+  "cache-control": "no-cache",
+  pragma: "no-cache",
+};
 const key = await fetch(`https://www.family.com.tw/Marketing/StoreMap/`, {
   method: "GET",
   mode: "cors",
-  headers: {
-    "Content-Type": "application/json",
-  },
 })
   .then((response) => response.text())
   .then((text) => text.match(/key=(\w+)"/)[1]);
@@ -35,27 +38,15 @@ const cities = [
   "南投縣",
 ];
 for (let city of cities) {
+  console.log();
   const towns = await fetch(
     `https://api.map.com.tw/net/familyShop.aspx?searchType=ShowTownList&type=&city=${encodeURIComponent(
       city
     )}&fun=storeTownList&key=${key}`,
     {
-      headers: {
-        accept: "*/*",
-        "accept-language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        "cache-control": "no-cache",
-        pragma: "no-cache",
-        "sec-ch-ua": '"Chromium";v="131", "Not_A Brand";v="24"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"macOS"',
-        "sec-fetch-dest": "script",
-        "sec-fetch-mode": "no-cors",
-        "sec-fetch-site": "cross-site",
-      },
+      headers: HEADERS,
       referrer: "https://www.family.com.tw/",
       referrerPolicy: "strict-origin-when-cross-origin",
-
-      method: "GET",
       mode: "cors",
       credentials: "omit",
     }
@@ -71,22 +62,9 @@ for (let city of cities) {
         town.town
       )}&road=&fun=showStoreList&key=${key}`,
       {
-        headers: {
-          accept: "*/*",
-          "accept-language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-          "cache-control": "no-cache",
-          pragma: "no-cache",
-          "sec-ch-ua": '"Chromium";v="131", "Not_A Brand";v="24"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-ch-ua-platform": '"macOS"',
-          "sec-fetch-dest": "script",
-          "sec-fetch-mode": "no-cors",
-          "sec-fetch-site": "cross-site",
-        },
+        headers: HEADERS,
         referrer: "https://www.family.com.tw/",
         referrerPolicy: "strict-origin-when-cross-origin",
-        body: null,
-        method: "GET",
         mode: "cors",
         credentials: "omit",
       }
