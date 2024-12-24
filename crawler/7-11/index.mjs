@@ -91,6 +91,6 @@ for (let area of AREACODE) {
     }
   }
 }
-// mkdir -p dist/7-11
+
 if (!fs.existsSync("dist")) fs.mkdirSync("dist", { recursive: true });
 fs.writeFileSync("dist/7-11.json", JSON.stringify(result, null, 2));
