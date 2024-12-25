@@ -80,7 +80,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./frontend/public
-
+          merge-multiple: true
       - uses: EndBug/add-and-commit@v9
         with:
           default_author: github_actions
