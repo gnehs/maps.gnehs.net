@@ -15,7 +15,7 @@ export default function Button({
     <button
       onClick={onClick}
       className={twMerge(
-        `flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm transition-colors`,
+        `flex h-10 items-center justify-center gap-2 rounded-lg px-3 text-sm transition-colors`,
         "glass-effect hoverable",
         active
           ? "bg-blue-500/20 font-semibold"

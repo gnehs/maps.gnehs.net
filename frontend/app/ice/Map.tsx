@@ -70,48 +70,56 @@ export default function Map() {
           ))}
         </MarkerClusterGroup>
       </MapContainer>
-      <div className="absolute left-0 top-0 z-[999] flex items-center gap-2 p-4">
-        <Button
-          onClick={() => setActiveBrand("all")}
-          active={activeBrand === "all"}
-        >
-          全部
-        </Button>
-        <Button
-          onClick={() => setActiveBrand("7-11")}
-          active={activeBrand === "7-11"}
-        >
-          7-11
-        </Button>
-        <Button
-          onClick={() => setActiveBrand("全家")}
-          active={activeBrand === "全家"}
-        >
-          全家
-        </Button>
-        {activeBrand === "全家" && (
-          <>
-            <div className="h-6 w-[2px] rounded-full bg-black/20" />
-
-            <Button onClick={() => setFlavor("all")} active={flavor === "all"}>
-              全部
-            </Button>
-            <Button
-              onClick={() => setFlavor("single")}
-              active={flavor === "single"}
-            >
-              單口味
-            </Button>
-            <Button
-              onClick={() => setFlavor("double")}
-              active={flavor === "double"}
-            >
-              雙口味
-            </Button>
-          </>
-        )}
-        <div className="h-6 w-[2px] rounded-full bg-black/20" />
-        {filteredIce.length.toLocaleString("zh-TW")} 筆資料
+      <div className="scrollbar-hide absolute left-0 top-0 z-[999] flex w-full overflow-x-auto">
+        <div className="flex shrink-0 items-center gap-2 p-4">
+          <Button
+            onClick={() => setActiveBrand("all")}
+            active={activeBrand === "all"}
+          >
+            全部
+          </Button>
+          <Button
+            onClick={() => setActiveBrand("7-11")}
+            active={activeBrand === "7-11"}
+          >
+            <img src="/7-eleven_logo.svg" className="size-4" />
+            <span className="hidden sm:inline">7-11</span>
+          </Button>
+          <Button
+            onClick={() => setActiveBrand("全家")}
+            active={activeBrand === "全家"}
+          >
+            <img src="/FamilyMart_Logo.svg" className="size-4" />
+            <span className="hidden sm:inline">全家</span>
+          </Button>
+          {activeBrand === "全家" && (
+            <>
+              <div className="h-6 w-[2px] shrink-0 rounded-full bg-black/20 backdrop-blur" />
+              <Button
+                onClick={() => setFlavor("all")}
+                active={flavor === "all"}
+              >
+                全部
+              </Button>
+              <Button
+                onClick={() => setFlavor("single")}
+                active={flavor === "single"}
+              >
+                單口味
+              </Button>
+              <Button
+                onClick={() => setFlavor("double")}
+                active={flavor === "double"}
+              >
+                雙口味
+              </Button>
+            </>
+          )}
+          <div className="h-6 w-[2px] shrink-0 rounded-full bg-black/20 backdrop-blur" />
+          <div className="font-mono text-sm">
+            {filteredIce.length.toLocaleString("zh-TW")} 筆資料
+          </div>
+        </div>
       </div>
     </div>
   );
