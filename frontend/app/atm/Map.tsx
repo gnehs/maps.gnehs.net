@@ -19,6 +19,10 @@ const _810_Taishin = icon({
   iconUrl: "/bank/812-taishin.svg",
   iconSize: [32, 32],
 });
+const _807_Sinopac = icon({
+  iconUrl: "/bank/807-sinopac.svg",
+  iconSize: [32, 32],
+});
 
 function getIcon(brand: string) {
   switch (brand) {
@@ -28,6 +32,8 @@ function getIcon(brand: string) {
       return _808_Esun;
     case "台新銀行":
       return _810_Taishin;
+    case "永豐銀行":
+      return _807_Sinopac;
     default:
       return _810_Taishin;
   }

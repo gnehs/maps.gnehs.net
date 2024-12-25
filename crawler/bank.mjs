@@ -6,6 +6,7 @@ function readJSON(path) {
 const _013_cathay = readJSON("dist/013-cathay.json");
 const _808_esun = readJSON("dist/808-esun.json");
 const _812_taishin = readJSON("dist/812-taishin.json");
+const _807_sinopac = readJSON("dist/807-sinopac.json");
 
 const result = [
   ..._013_cathay
@@ -56,6 +57,27 @@ const result = [
         store.USD === "y" ? "🇺🇸 美元" : "",
         store.EUR === "y" ? "🇪🇺 歐元" : "",
         store.CNY === "y" ? "🇨🇳 人民幣" : "",
+      ].filter((x) => x),
+    })),
+  ..._807_sinopac
+    .filter(
+      (store) =>
+        store.withdrawcny === "1" ||
+        store.withdrawusd === "1" ||
+        store.withdrawjpy === "1" ||
+        store.withdrawhkd === "1"
+    )
+    .map((store) => ({
+      name: store.location,
+      address: store.address,
+      lat: parseFloat(store.lat),
+      lng: parseFloat(store.lng),
+      brand: "永豐銀行",
+      tags: [
+        store.withdrawcny === "1" ? "🇨🇳 人民幣" : "",
+        store.withdrawusd === "1" ? "🇺🇸 美元" : "",
+        store.withdrawjpy === "1" ? "🇯🇵 日圓" : "",
+        store.withdrawhkd === "1" ? "🇭🇰 港幣" : "",
       ].filter((x) => x),
     })),
 ];
