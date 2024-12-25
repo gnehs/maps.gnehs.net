@@ -2,22 +2,39 @@
 import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Popup } from "react-leaflet";
 import { MapLibreTileLayer } from "@/components/MapLibreTileLayer";
-import ice from "@/public/ice.json";
+import bank from "@/public/bank.json";
 import { icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "react-leaflet-markercluster/styles";
 import MarkerClusterGroup from "react-leaflet-markercluster";
-const SevenElevenIcon = icon({
-  iconUrl: "/7-eleven_logo.svg",
+const _013_Cathay = icon({
+  iconUrl: "/bank/013-cathay.svg",
   iconSize: [32, 32],
 });
-const FamilyMartIcon = icon({
-  iconUrl: "/FamilyMart_Logo.svg",
+const _808_Esun = icon({
+  iconUrl: "/bank/808-esun.svg",
   iconSize: [32, 32],
 });
+const _810_Taishin = icon({
+  iconUrl: "/bank/812-taishin.svg",
+  iconSize: [32, 32],
+});
+
+function getIcon(brand: string) {
+  switch (brand) {
+    case "國泰世華":
+      return _013_Cathay;
+    case "玉山銀行":
+      return _808_Esun;
+    case "台新銀行":
+      return _810_Taishin;
+    default:
+      return _810_Taishin;
+  }
+}
 export default function Map() {
   return (
-    <div>
+    <div className="relative">
       <MapContainer
         className="h-screen"
         center={[25.02, 121.53]}
@@ -35,11 +52,11 @@ export default function Map() {
           url="https://tiles.stadiamaps.com/styles/alidade_smooth.json"
         />
         <MarkerClusterGroup>
-          {ice.map((item, index) => (
+          {bank.map((item, index) => (
             <Marker
               key={index}
               position={[item.lat, item.lng]}
-              icon={item.brand === "7-11" ? SevenElevenIcon : FamilyMartIcon}
+              icon={getIcon(item.brand)}
             >
               <Popup>
                 {item.brand} <br />
@@ -50,6 +67,9 @@ export default function Map() {
           ))}
         </MarkerClusterGroup>
       </MapContainer>
+      <div className="absolute left-10 top-0 z-[999] bg-white bg-opacity-50 p-4">
+        {bank.length} 筆資料
+      </div>
     </div>
   );
 }

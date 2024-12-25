@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # 允許手動觸發
 
 jobs:
-  run-crawler:
+  run-convenience-store-crawler:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -29,29 +29,60 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Run Crawler
+      - name: Run Store Crawler
         run: pnpm ice
 
-      - name: Upload Data
+      - name: Upload Store Data
         uses: actions/upload-artifact@v4
         with:
           name: ice-data
           path: ./crawler/dist/ice.json
 
-  commit-data:
+  run-bank-crawler:
     runs-on: ubuntu-latest
-    needs: run-crawler
+    defaults:
+      run:
+        working-directory: ./crawler
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download Data
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Run Bank Crawler
+        run: pnpm bank
+
+      - name: Upload Bank Data
+        uses: actions/upload-artifact@v4
+        with:
+          name: bank-data
+          path: ./crawler/dist/bank.json
+
+  commit-data:
+    runs-on: ubuntu-latest
+    needs: [run-convenience-store-crawler, run-bank-crawler]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download All Data
         uses: actions/download-artifact@v4
         with:
-          name: ice-data
           path: ./frontend/public
 
       - uses: EndBug/add-and-commit@v9
         with:
           default_author: github_actions
-          message: "🤖 自動更新店家資料"
-          add: "frontend/public/ice.json"
+          message: "🤖 自動更新店家與 ATM 資料"
+          add: "frontend/public/*.json"

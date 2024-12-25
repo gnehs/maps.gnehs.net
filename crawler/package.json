@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "ice": "node ./convenience-store/family-mart/index.mjs && node ./convenience-store/7-11/index.mjs && node convenience-store.mjs"
+    "ice": "node ./convenience-store/family-mart/index.mjs && node ./convenience-store/7-11/index.mjs && node convenience-store.mjs",
+    "bank": "node ./bank/013-cathay.mjs && node ./bank/808-esun.mjs && node ./bank/812-taishin.mjs && node bank.mjs"
   },
   "keywords": [],
   "author": "",
