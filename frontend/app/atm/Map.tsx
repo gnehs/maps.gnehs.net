@@ -42,7 +42,8 @@ export default function Map() {
   return (
     <div className="relative">
       <MapContainer
-        className="h-screen"
+        className="h-[100svh]"
+        zoomControl={false}
         center={[25.02, 121.53]}
         zoom={14}
         minZoom={3}
