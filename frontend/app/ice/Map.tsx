@@ -25,7 +25,9 @@ export default function Map() {
   );
   const [flavor, setFlavor] = useState<"all" | "single" | "double">("all");
   const [open, setOpen] = useState(false);
-  const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
+  const [selectedItem, setSelectedItem] = useState<null | (typeof ice)[0]>(
+    null,
+  );
   const filteredIce = useMemo(() => {
     return ice.filter((item) => {
       if (activeBrand === "all") return true;
@@ -40,8 +42,21 @@ export default function Map() {
       return false;
     });
   }, [activeBrand, flavor]);
-  const activeItem =
-    activeItemIndex !== null ? filteredIce[activeItemIndex] : null;
+  const markerComponents = useMemo(() => {
+    return filteredIce.map((item, index) => (
+      <Marker
+        key={index}
+        position={[item.lat, item.lng]}
+        icon={item.brand === "7-11" ? SevenElevenIcon : FamilyMartIcon}
+        eventHandlers={{
+          click: () => {
+            setSelectedItem(item);
+            setOpen(true);
+          },
+        }}
+      />
+    ));
+  }, [filteredIce]);
   return (
     <div className="relative">
       <MapContainer
@@ -61,23 +76,9 @@ export default function Map() {
           attribution='&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
           url="https://tiles.stadiamaps.com/styles/alidade_smooth.json"
         />
-        <MarkerClusterGroup>
-          {filteredIce.map((item, index) => (
-            <Marker
-              key={item.name + item.lat + item.lng}
-              position={[item.lat, item.lng]}
-              icon={item.brand === "7-11" ? SevenElevenIcon : FamilyMartIcon}
-              eventHandlers={{
-                click: (e) => {
-                  setActiveItemIndex(index);
-                  setOpen(true);
-                },
-              }}
-            />
-          ))}
-        </MarkerClusterGroup>
+        <MarkerClusterGroup>{markerComponents}</MarkerClusterGroup>
       </MapContainer>
-      <div className="scrollbar-hide absolute left-0 top-0 z-[999] flex w-full overflow-x-auto">
+      <div className="scrollbar-hide absolute left-0 top-0 flex w-full overflow-x-auto">
         <div className="flex shrink-0 items-center gap-2 p-4">
           <Button
             onClick={() => setActiveBrand("all")}
@@ -130,32 +131,32 @@ export default function Map() {
       </div>
       <Drawer.Root open={open} onOpenChange={setOpen}>
         <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40" />
+          <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
           <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-fit flex-col rounded-t-[10px] bg-gray-100 outline-none">
             <div className="flex-1 rounded-t-[10px] bg-white p-4">
-              <div className="mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300" />
-              {activeItem && (
+              <div className="mx-auto mb-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300" />
+              {selectedItem && (
                 <div className="mx-auto max-w-md">
                   <Drawer.Title className="mb-2 flex items-center gap-2 text-xl font-medium text-gray-900">
-                    {activeItem.brand === "7-11" && (
+                    {selectedItem.brand === "7-11" && (
                       <img src="/7-eleven_logo.svg" className="size-5" />
                     )}
-                    {activeItem.brand === "全家" && (
+                    {selectedItem.brand === "全家" && (
                       <img src="/FamilyMart_Logo.svg" className="size-5" />
                     )}
-                    {activeItem.brand === "7-11"
+                    {selectedItem.brand === "7-11"
                       ? "統一超商"
-                      : activeItem.brand}
-                    {activeItem.name}店
+                      : selectedItem.brand}
+                    {selectedItem.name}店
                   </Drawer.Title>
-                  <p className="mb-2 text-gray-600">
-                    {activeItem.tags.join("、")}
+                  <p className="mb-1 text-gray-600">
+                    {selectedItem.tags.join("、")}
                   </p>
-                  <p className="mb-2 text-gray-600">{activeItem.address}</p>
+                  <p className="mb-2 text-gray-600">{selectedItem.address}</p>
 
                   <a
                     className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-gray-50 transition-colors hover:bg-gray-100 active:bg-gray-200"
-                    href={`https://www.google.com/maps/search/?api=1&query=${activeItem.brand}${activeItem.name}店`}
+                    href={`https://www.google.com/maps/search/?api=1&query=${selectedItem.brand}${selectedItem.name}店`}
                     target="_blank"
                   >
                     <MapIcon size={20} />在 Google 地圖上查看
