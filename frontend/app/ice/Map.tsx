@@ -8,7 +8,8 @@ import "leaflet/dist/leaflet.css";
 import "react-leaflet-markercluster/styles";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import Button from "@/components/Button";
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
+import { Drawer } from "vaul";
 const SevenElevenIcon = icon({
   iconUrl: "/7-eleven_logo.svg",
   iconSize: [32, 32],
@@ -22,23 +23,28 @@ export default function Map() {
     "all",
   );
   const [flavor, setFlavor] = useState<"all" | "single" | "double">("all");
-
-  const filteredIce = ice.filter((item) => {
-    if (activeBrand === "all") return true;
-    if (activeBrand === "7-11") return item.brand === "7-11";
-    if (activeBrand === "全家") {
-      if (flavor === "all") return item.brand === "全家";
-      if (flavor === "single")
-        return item.brand === "全家" && item.tags.includes("單口味");
-      if (flavor === "double")
-        return item.brand === "全家" && item.tags.includes("雙口味");
-    }
-    return false;
-  });
+  const [open, setOpen] = useState(false);
+  const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
+  const filteredIce = useMemo(() => {
+    return ice.filter((item) => {
+      if (activeBrand === "all") return true;
+      if (activeBrand === "7-11") return item.brand === "7-11";
+      if (activeBrand === "全家") {
+        if (flavor === "all") return item.brand === "全家";
+        if (flavor === "single")
+          return item.brand === "全家" && item.tags.includes("單口味");
+        if (flavor === "double")
+          return item.brand === "全家" && item.tags.includes("雙口味");
+      }
+      return false;
+    });
+  }, [activeBrand, flavor]);
+  const activeItem =
+    activeItemIndex !== null ? filteredIce[activeItemIndex] : null;
   return (
     <div className="relative">
       <MapContainer
-        className="h-[100svh]"
+        className="z-0 h-[100svh]"
         zoomControl={false}
         center={[25.02, 121.53]}
         zoom={14}
@@ -57,16 +63,16 @@ export default function Map() {
         <MarkerClusterGroup>
           {filteredIce.map((item, index) => (
             <Marker
-              key={index}
+              key={item.name + item.lat + item.lng}
               position={[item.lat, item.lng]}
               icon={item.brand === "7-11" ? SevenElevenIcon : FamilyMartIcon}
-            >
-              <Popup>
-                {item.brand} <br />
-                {item.name} <br />
-                {item.tags.join("、")}
-              </Popup>
-            </Marker>
+              eventHandlers={{
+                click: (e) => {
+                  setActiveItemIndex(index);
+                  setOpen(true);
+                },
+              }}
+            />
           ))}
         </MarkerClusterGroup>
       </MapContainer>
@@ -121,6 +127,36 @@ export default function Map() {
           </div>
         </div>
       </div>
+      <Drawer.Root open={open} onOpenChange={setOpen}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40" />
+          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-fit flex-col rounded-t-[10px] bg-gray-100 outline-none">
+            <div className="flex-1 rounded-t-[10px] bg-white p-4">
+              <div className="mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300" />
+              {activeItem && (
+                <div className="mx-auto max-w-md">
+                  <Drawer.Title className="mb-2 flex items-center gap-2 text-xl font-medium text-gray-900">
+                    {activeItem.brand === "7-11" && (
+                      <img src="/7-eleven_logo.svg" className="size-5" />
+                    )}
+                    {activeItem.brand === "全家" && (
+                      <img src="/FamilyMart_Logo.svg" className="size-5" />
+                    )}
+                    {activeItem.brand === "7-11"
+                      ? "統一超商"
+                      : activeItem.brand}
+                    {activeItem.name}店
+                  </Drawer.Title>
+                  <p className="mb-2 text-gray-600">
+                    {activeItem.tags.join("、")}
+                  </p>
+                  <p className="mb-2 text-gray-600">{activeItem.address}</p>
+                </div>
+              )}
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
     </div>
   );
 }

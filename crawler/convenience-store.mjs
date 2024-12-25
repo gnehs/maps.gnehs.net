@@ -19,7 +19,7 @@ const result = [
   ...familyMart
     .filter((store) => store.all?.includes("ice"))
     .map((store) => ({
-      name: store.NAME,
+      name: store.NAME.replace(/^全家/, "").replace(/店$/, ""),
       address: store.addr,
       lat: store.py,
       lng: store.px,
