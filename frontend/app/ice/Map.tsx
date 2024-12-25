@@ -1,6 +1,6 @@
 "use client";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, Marker, Popup } from "react-leaflet";
+import { MapContainer, Marker } from "react-leaflet";
 import { MapLibreTileLayer } from "@/components/MapLibreTileLayer";
 import ice from "@/public/ice.json";
 import { icon } from "leaflet";
@@ -10,6 +10,7 @@ import MarkerClusterGroup from "react-leaflet-markercluster";
 import Button from "@/components/Button";
 import { useState, useMemo } from "react";
 import { Drawer } from "vaul";
+import { MapIcon } from "lucide-react";
 const SevenElevenIcon = icon({
   iconUrl: "/7-eleven_logo.svg",
   iconSize: [32, 32],
@@ -151,6 +152,14 @@ export default function Map() {
                     {activeItem.tags.join("、")}
                   </p>
                   <p className="mb-2 text-gray-600">{activeItem.address}</p>
+
+                  <a
+                    className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-gray-50 transition-colors hover:bg-gray-100 active:bg-gray-200"
+                    href={`https://www.google.com/maps/search/?api=1&query=${activeItem.brand}${activeItem.name}店`}
+                    target="_blank"
+                  >
+                    <MapIcon size={20} />在 Google 地圖上查看
+                  </a>
                 </div>
               )}
             </div>
