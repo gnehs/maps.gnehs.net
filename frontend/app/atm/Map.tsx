@@ -48,6 +48,9 @@ export default function Map() {
   const [activeBrand, setActiveBrand] = useState<
     "all" | "國泰世華" | "玉山銀行" | "台新銀行" | "永豐銀行"
   >("all");
+  const [activeTag, setActiveTag] = useState<
+    "all" | "🇺🇸 美元" | "🇭🇰 港幣" | "🇯🇵 日圓" | "🇨🇳 人民幣"
+  >("all");
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<null | (typeof bank)[0]>(
     null,
@@ -55,10 +58,11 @@ export default function Map() {
 
   const filteredBank = useMemo(() => {
     return bank.filter((item) => {
-      if (activeBrand === "all") return true;
-      return item.brand === activeBrand;
+      if (activeBrand !== "all" && item.brand !== activeBrand) return false;
+      if (activeTag !== "all" && !item.tags.includes(activeTag)) return false;
+      return true;
     });
-  }, [activeBrand]);
+  }, [activeBrand, activeTag]);
 
   const markerComponents = useMemo(() => {
     return filteredBank.map((item, index) => (
@@ -132,6 +136,37 @@ export default function Map() {
           >
             <img src="/bank/807-sinopac.svg" className="size-4" />
             <span className="hidden sm:inline">永豐銀行</span>
+          </Button>
+          <div className="h-6 w-[2px] shrink-0 rounded-full bg-black/20 backdrop-blur" />
+          <Button
+            onClick={() => setActiveTag("all")}
+            active={activeTag === "all"}
+          >
+            全部幣別
+          </Button>
+          <Button
+            onClick={() => setActiveTag("🇺🇸 美元")}
+            active={activeTag === "🇺🇸 美元"}
+          >
+            🇺🇸 美元
+          </Button>
+          <Button
+            onClick={() => setActiveTag("🇭🇰 港幣")}
+            active={activeTag === "🇭🇰 港幣"}
+          >
+            🇭🇰 港幣
+          </Button>
+          <Button
+            onClick={() => setActiveTag("🇯🇵 日圓")}
+            active={activeTag === "🇯🇵 日圓"}
+          >
+            🇯🇵 日圓
+          </Button>
+          <Button
+            onClick={() => setActiveTag("🇨🇳 人民幣")}
+            active={activeTag === "🇨🇳 人民幣"}
+          >
+            🇨🇳 人民幣
           </Button>
           <div className="h-6 w-[2px] shrink-0 rounded-full bg-black/20 backdrop-blur" />
           <div className="font-mono text-sm">
